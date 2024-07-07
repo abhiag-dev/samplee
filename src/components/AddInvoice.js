@@ -28,19 +28,21 @@ const AddInvoice = ({ onAddInvoice }) => {
   useEffect(() => {
     // Fetch customers from the backend
     axios
-      .get("http://localhost:3001/api/customers/list")
+      .get("https://backendserver-52a3.onrender.com/customers/list")
       .then((response) => setCustomers(response.data))
       .catch((error) => console.error("Error fetching customers:", error));
 
     // Fetch items from the backend
     axios
-      .get("http://localhost:3001/api/items/list")
+      .get("https://backendserver-52a3.onrender.com/items/list")
       .then((response) => setItems(response.data))
       .catch((error) => console.error("Error fetching items:", error));
 
     // Fetch the last invoice number
     axios
-      .get("http://localhost:3001/api/invoices/last-invoice-number")
+      .get(
+        "https://backendserver-52a3.onrender.com/invoices/last-invoice-number"
+      )
       .then((response) => {
         const lastInvoiceNumber = response.data.invoiceNumber || "0";
         setFormData((prevData) => ({
@@ -77,7 +79,9 @@ const AddInvoice = ({ onAddInvoice }) => {
     if (name === "CustomerName" && value) {
       // Fetch last items rates for the selected customer
       axios
-        .get(`http://localhost:3001/api/invoices/${value}/last-items-rates`)
+        .get(
+          `https://backendserver-52a3.onrender.com/invoices/${value}/last-items-rates`
+        )
         .then((response) => setLastItemsRates(response.data))
         .catch((error) =>
           console.error("Error fetching last items rates:", error)
@@ -89,7 +93,7 @@ const AddInvoice = ({ onAddInvoice }) => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://localhost:3001/api/invoices/add",
+        "https://backendserver-52a3.onrender.com/invoices/add",
         formData
       );
 

@@ -13,9 +13,7 @@ const CustomerList = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/api/customers/list"
-      );
+      const response = await axios.get("http://localhost:3000/customers/");
       setCustomers(response.data);
     } catch (error) {
       console.error("Error fetching customers:", error);
@@ -49,7 +47,6 @@ const CustomerList = () => {
               <td>{customer.receiverStateCode}</td>
               <td>
                 <Link to={`/edit-customer/${customer.CustomerName}`}>Edit</Link>{" "}
-                {/* Link to edit customer page */}
               </td>
             </tr>
           ))}

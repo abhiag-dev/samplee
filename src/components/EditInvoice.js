@@ -10,14 +10,14 @@ const EditInvoice = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3001/api/invoices/${InvoiceNumber}`)
+      .get(`https://backendserver-52a3.onrender.com/invoices/${InvoiceNumber}`)
       .then((response) => setInvoice(response.data))
       .catch((error) =>
         console.error("There was an error fetching the invoice!", error)
       );
 
     axios
-      .get("http://localhost:3001/customers")
+      .get("https://backendserver-52a3.onrender.com/customers")
       .then((response) => setCustomers(response.data))
       .catch((error) =>
         console.error("There was an error fetching the customers!", error)

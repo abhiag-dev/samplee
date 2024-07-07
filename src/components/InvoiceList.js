@@ -15,9 +15,7 @@ const InvoiceList = () => {
 
   const fetchInvoices = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/api/invoices/list"
-      );
+      const response = await axios.get("http://localhost:3000/invoices/list");
       setInvoices(response.data);
     } catch (error) {
       console.error("Error fetching invoices:", error);
