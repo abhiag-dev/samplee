@@ -91,6 +91,8 @@ const ViewInvoice = () => {
           `https://backendserver-52a3.onrender.com/items/${itemId}`
         );
         details = response.data[0];
+      } else {
+        return {};
       }
 
       // response.data;
