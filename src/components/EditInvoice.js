@@ -68,18 +68,6 @@ const EditInvoice = () => {
       [name]: value,
     });
   };
-  const handleDelete = async () => {
-    try {
-      await axios.delete(
-        `https://backendserver-52a3.onrender.com/invoices/delete/${InvoiceNumber}`
-      );
-      alert("Invoice deleted successfully!");
-      // history.push("/invoices"); // Redirect to invoices list or another route
-    } catch (error) {
-      console.error("Error deleting invoice:", error);
-      alert("Failed to delete invoice. Please try again.");
-    }
-  };
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
@@ -228,7 +216,7 @@ const EditInvoice = () => {
           </div>
 
           <button type="submit">Update Invoice</button>
-          <button onClick={handleDelete}>Delete Invoice</button>
+          {/* <button onClick={handleDelete}>Delete Invoice</button> */}
         </form>
       )}
     </div>
