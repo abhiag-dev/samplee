@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-// import "../css/EditInvoice.css";
 
 const EditInvoice = () => {
   const { InvoiceNumber } = useParams();
@@ -26,24 +25,38 @@ const EditInvoice = () => {
 
   const [formData, setFormData] = useState({
     date: "",
-    type: "",
     invoiceNumber: "",
     CustomerName: "",
+    vehicleNumber: "",
+    itemName1: "",
+    item1Quantity: "",
+    item1Rate: "",
+    item1Total: "",
+    itemName2: "",
+    item2Quantity: "",
+    item2Rate: "",
+    item2Total: 0,
+    freight: "",
     invoiceValue: "",
-
-    // dueDate: "",
   });
 
   useEffect(() => {
     if (invoice) {
       setFormData({
-        date: invoice.date,
-        type: invoice.type,
-        invoiceNumber: invoice.invoiceNumber,
+        date: invoice.date || "",
+        invoiceNumber: invoice.invoiceNumber || "",
         CustomerName: invoice.CustomerName || "",
-        invoiceValue: invoice.invoiceValue,
+        vehicleNumber: invoice.vehicleNumber || "",
+        itemName1: invoice.itemName1 || "",
+        item1Quantity: invoice.item1Quantity || "",
+        item1Rate: invoice.item1Rate || "",
 
-        // dueDate: invoice.dueDate,
+        itemName2: invoice.itemName2 || "",
+        item2Quantity: invoice.item2Quantity || "",
+        item2Rate: invoice.item2Rate || "",
+
+        freight: invoice.freight || "",
+        invoiceValue: invoice.invoiceValue || "",
       });
     }
   }, [invoice]);
@@ -55,16 +68,31 @@ const EditInvoice = () => {
       [name]: value,
     });
   };
-
+  const handleDelete = async () => {
+    try {
+      await axios.delete(
+        `https://localhost/3000/invoices/delete/${InvoiceNumber}`
+      );
+      alert("Invoice deleted successfully!");
+      // history.push("/invoices"); // Redirect to invoices list or another route
+    } catch (error) {
+      console.error("Error deleting invoice:", error);
+      alert("Failed to delete invoice. Please try again.");
+    }
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .put(`http://localhost:3001/invoices/${InvoiceNumber}`, formData)
+      .put(
+        `https://backendserver-52a3.onrender.com/invoices/${InvoiceNumber}`,
+        formData
+      )
       .then((response) => {
         setInvoice(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
-        console.error("Error updating invoice:", error);
+        console.error("Error updating invoice:", formData);
       });
   };
 
@@ -82,15 +110,7 @@ const EditInvoice = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="form-group">
-            <label>Type:</label>
-            <input
-              type="text"
-              name="type"
-              value={formData.type}
-              onChange={handleChange}
-            />
-          </div>
+
           <div className="form-group">
             <label>Invoice Number:</label>
             <input
@@ -100,8 +120,9 @@ const EditInvoice = () => {
               onChange={handleChange}
             />
           </div>
+
           <div className="form-group">
-            <label>Customer:</label>
+            <label>Customer Name:</label>
             <select
               name="CustomerName"
               value={formData.CustomerName}
@@ -109,15 +130,93 @@ const EditInvoice = () => {
             >
               <option value="">Select Customer</option>
               {customers.map((customer) => (
-                <option
-                  key={customer.CustomerName}
-                  value={customer.CustomerName}
-                >
+                <option key={customer.id} value={customer.CustomerName}>
                   {customer.CustomerName}
                 </option>
               ))}
             </select>
           </div>
+
+          <div className="form-group">
+            <label>Vehicle Number:</label>
+            <input
+              type="text"
+              name="vehicleNumber"
+              value={formData.vehicleNumber}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Item Name 1:</label>
+            <input
+              type="text"
+              name="itemName1"
+              value={formData.itemName1}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Item 1 Quantity:</label>
+            <input
+              type="number"
+              name="item1Quantity"
+              value={formData.item1Quantity}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Item 1 Rate:</label>
+            <input
+              type="number"
+              name="item1Rate"
+              value={formData.item1Rate}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Item Name 2:</label>
+            <input
+              type="text"
+              name="itemName2"
+              value={formData.itemName2}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Item 2 Quantity:</label>
+            <input
+              type="number"
+              name="item2Quantity"
+              value={formData.item2Quantity}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Item 2 Rate:</label>
+            <input
+              type="number"
+              name="item2Rate"
+              value={formData.item2Rate}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Freight:</label>
+            <input
+              type="number"
+              name="freight"
+              value={formData.freight}
+              onChange={handleChange}
+            />
+          </div>
+
           <div className="form-group">
             <label>Invoice Value:</label>
             <input
@@ -129,6 +228,7 @@ const EditInvoice = () => {
           </div>
 
           <button type="submit">Update Invoice</button>
+          <button onClick={handleDelete}>Delete Invoice</button>
         </form>
       )}
     </div>

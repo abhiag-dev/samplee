@@ -32,7 +32,7 @@ const ViewInvoice = () => {
     const fetchInvoice = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/invoices/${invoiceNumber}`
+          `https://backendserver-52a3.onrender.com/invoices/${invoiceNumber}`
         );
         const invoiceData = response.data;
         const customerData = await fetchCustomer(invoiceData.CustomerName);
@@ -40,19 +40,22 @@ const ViewInvoice = () => {
         // Combine invoice and customer data
         const combinedData = { ...invoiceData, ...customerData[0] };
         setInvoice(combinedData);
-        // console.log(response.data.freight);
 
         // Fetch item details
         const itemIds = [
-          response.data.item1Id,
-          response.data.item2Id,
-          response.data.freight,
+          response.data.itemName1,
+          response.data.item2Quantity === 0 || response.data.item2Rate === 0
+            ? response.data.itemName2
+            : null,
+
+          parseInt(response.data.freight),
         ];
         const itemDetailsPromises = itemIds.map((itemId) =>
           fetchItemDetails(itemId, customerData.receiverStateCode)
         );
         const itemsDetails = await Promise.all(itemDetailsPromises);
         setItemDetails(itemsDetails);
+        console.log(itemsDetails);
       } catch (error) {
         console.error("There was an error fetching the invoice!", error);
       }
@@ -63,7 +66,7 @@ const ViewInvoice = () => {
   const fetchCustomer = async (customerName) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/customers/${customerName}`
+        `https://backendserver-52a3.onrender.com/customers/${customerName}`
       );
       return response.data;
     } catch (error) {
@@ -74,30 +77,40 @@ const ViewInvoice = () => {
   const fetchItemDetails = async (itemId, receiverStateCode) => {
     try {
       let response;
-      if (Number.isInteger(itemId)) {
-        response = await axios.get(`http://localhost:3000/items/${itemId}`);
-        console.log(itemId, "here I am");
-      } else {
-        response = await axios.get(`http://localhost:3000/items/${itemId}`);
-      }
-      const details = response.data;
+      let details;
+      // console.log(typeof itemId);
 
-      let cgst = details[0].cgst;
-      let sgst = details[0].sgst;
+      // console.log(itemId);
+      if (typeof itemId == "number") {
+        details = await axios.get(
+          `https://backendserver-52a3.onrender.com/items/Freight`
+        );
+        details = details.data[0];
+      } else {
+        response = await axios.get(
+          `https://backendserver-52a3.onrender.com/items/${itemId}`
+        );
+        details = response.data[0];
+      }
+
+      // response.data;
+      // details += detailsa;
+      // details = details[0];
+
+      let cgst = details.cgst;
+      let sgst = details.sgst;
       let igst = null;
       let grossRate = 100 / (100 + (cgst + sgst));
 
       let grossTotal, taxi, taxs, taxc;
       if (receiverStateCode !== "27") {
         igst = cgst + sgst;
-        cgst = null;
-        sgst = null;
+        details.cgst = null;
+        details.sgst = null;
       }
-      console.log(itemId);
+      // console.log(itemId);
       return {
         ...details,
-        cgst,
-        sgst,
         igst,
         grossRate,
         grossTotal,
@@ -480,7 +493,10 @@ const ViewInvoice = () => {
                 className="xl25224295"
                 style={{ borderRight: "1.0pt solid black", borderLeft: "none" }}
               >
-                {invoice.freight > 0 ? "TO PAY" : "By Road"}
+                {invoice.itemName2 === "Freight" ||
+                invoice.itemName1 === "Freight"
+                  ? "By Road"
+                  : "TO PAY"}
               </td>
             </tr>
             <tr height={25} style={{ height: "18.6pt" }}>
@@ -951,7 +967,7 @@ const ViewInvoice = () => {
                     align="right"
                     style={{ height: "40.0pt" }}
                   >
-                    {index + 1}
+                    {details.itemName !== "Freight" ? index + 1 : null}
                   </td>
                   <td
                     colSpan={3}
@@ -961,11 +977,11 @@ const ViewInvoice = () => {
                       borderLeft: "none",
                     }}
                   >
-                    {details[0].itemName}
+                    {details.itemName}
                   </td>
-                  <td className="xl8124295"> {details[0].hsnCode}</td>
+                  <td className="xl8124295"> {details.hsnCode}</td>
                   <td className="xl8224295" align="right">
-                    {details[0].itemName !== "Freight" ? (
+                    {details.itemName !== "Freight" ? (
                       index === 0 ? (
                         invoice.item1Quantity
                       ) : (
@@ -986,25 +1002,20 @@ const ViewInvoice = () => {
                   </td>
 
                   <td className="xl13924295" align="right">
-                    {/* {details.grossTotal} */}
-                    <td className="xl13924295" align="right">
-                      {details.itemName !== "Freight"
-                        ? index === 0
-                          ? (details.grossTotal =
-                              invoice.item1Quantity *
-                              details.grossTotal).toFixed(2)
-                          : (details.grossTotal =
-                              invoice.item2Quantity *
-                              details.grossTotal.toFixed(2))
-                        : (details.grossTotal = invoice.freight.toFixed(2))}
-                    </td>
+                    {details.itemName !== "Freight"
+                      ? index === 0
+                        ? (details.grossTotal = (
+                            invoice.item1Quantity * details.grossTotal
+                          ).toFixed(0))
+                        : (details.grossTotal = (
+                            invoice.item2Quantity * details.grossTotal
+                          ).toFixed(0))
+                      : (details.grossTotal = invoice.freight)}
                   </td>
 
                   <td className="xl14024295">&nbsp;</td>
                   <td className="xl13924295" align="right">
-                    <td className="xl13924295" align="right">
-                      {details.grossTotal.toFixed(2)}
-                    </td>
+                    <td align="right">{details.grossTotal}</td>
                   </td>
                   <td
                     className="xl8224295"
@@ -1021,7 +1032,7 @@ const ViewInvoice = () => {
                     {details.cgst
                       ? (details.taxc =
                           details.grossTotal *
-                          ((details.cgst || 0) / 100)).toFixed(2)
+                          ((details.cgst || 0) / 100)).toFixed(0)
                       : null}
                   </td>
                   <td
@@ -1039,7 +1050,7 @@ const ViewInvoice = () => {
                     {details.sgst
                       ? (details.taxs =
                           details.grossTotal *
-                          ((details.sgst || 0) / 100)).toFixed(2)
+                          ((details.sgst || 0) / 100)).toFixed(0)
                       : null}
                   </td>
                   <td className="xl8224295" style={{ borderLeft: "none" }}>
@@ -1053,7 +1064,7 @@ const ViewInvoice = () => {
                     {details.igst
                       ? (details.taxi =
                           details.grossTotal *
-                          ((details.igst || 0) / 100)).toFixed(2)
+                          ((details.igst || 0) / 100)).toFixed(0)
                       : null}
                   </td>
                 </tr>
@@ -1426,7 +1437,7 @@ const ViewInvoice = () => {
                 align="right"
                 style={{ borderLeft: "none" }}
               >
-                {totalGrossTotal.toFixed(2)}
+                {totalGrossTotal.toFixed(0)}
               </td>
               <td className="xl8824295" style={{ borderLeft: "none" }}>
                 &nbsp;
@@ -1436,7 +1447,7 @@ const ViewInvoice = () => {
                 align="right"
                 style={{ borderLeft: "none" }}
               >
-                {totalcgst.toFixed(2)}
+                {totalcgst.toFixed(0)}
               </td>
               <td className="xl11324295" style={{ borderLeft: "none" }}>
                 &nbsp;
@@ -1446,11 +1457,11 @@ const ViewInvoice = () => {
                 align="right"
                 style={{ borderLeft: "none" }}
               >
-                {totalsgst.toFixed(2)}
+                {totalsgst.toFixed(0)}
               </td>
               <td className="xl11424295">&nbsp;</td>
               <td className="xl11224295" align="right">
-                {totaligst.toFixed(2)}
+                {totaligst.toFixed(0)}
               </td>
             </tr>
             <tr height={25} style={{ height: "18.6pt" }}>
@@ -1482,7 +1493,7 @@ const ViewInvoice = () => {
                 align="right"
                 style={{ borderLeft: "none" }}
               >
-                {totalGrossTotal.toFixed(2)}
+                {totalGrossTotal.toFixed(0)}
               </td>
             </tr>
             <tr height={25} style={{ height: "18.6pt" }}>
@@ -1503,7 +1514,7 @@ const ViewInvoice = () => {
               >
                 {numberToWords(
                   (totalGrossTotal + totalcgst + totalsgst + totaligst).toFixed(
-                    2
+                    0
                   )
                 ) + " Only"}
               </td>
@@ -1515,7 +1526,7 @@ const ViewInvoice = () => {
                 Add:- CGST
               </td>
               <td className="xl11724295" style={{ borderLeft: "none" }}>
-                {totalcgst.toFixed(2)}
+                {totalcgst.toFixed(0)}
               </td>
             </tr>
             <tr height={25} style={{ height: "18.6pt" }}>
@@ -1539,7 +1550,7 @@ const ViewInvoice = () => {
                 className="xl11824295"
                 style={{ borderTop: "none", borderLeft: "none" }}
               >
-                {totalsgst.toFixed(2)}
+                {totalsgst.toFixed(0)}
               </td>
             </tr>
             <tr height={25} style={{ height: "18.6pt" }}>
@@ -1572,7 +1583,7 @@ const ViewInvoice = () => {
                 className="xl12024295"
                 style={{ borderTop: "none", borderLeft: "none" }}
               >
-                {totaligst.toFixed(2)}
+                {totaligst.toFixed(0)}
               </td>
             </tr>
             <tr height={25} style={{ height: "18.6pt" }}>
@@ -1604,7 +1615,7 @@ const ViewInvoice = () => {
               <td className="xl12224295">
                 {" "}
                 {(totalGrossTotal + totalcgst + totalsgst + totaligst).toFixed(
-                  2
+                  0
                 )}
               </td>
             </tr>

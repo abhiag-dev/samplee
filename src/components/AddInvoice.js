@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../css/EditCustomer.css"; // Import CSS file for styling
-
+import { useNavigate } from "react-router-dom";
 const AddInvoice = ({ onAddInvoice }) => {
+  const history = useNavigate();
   const [formData, setFormData] = useState({
     date: "",
     invoiceNumber: "",
@@ -91,26 +92,16 @@ const AddInvoice = ({ onAddInvoice }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.target
+      .querySelector('button[type="submit"]')
+      .setAttribute("disabled", "disabled");
     try {
-      const { data } = await axios.post(
+      await axios.post(
         "https://backendserver-52a3.onrender.com/invoices/add",
         formData
       );
 
-      setNotification(`Invoice added successfully:
-      Date: ${data.date}
-      Invoice Number: ${data.invoiceNumber}
-      Customer Name: ${data.CustomerName}
-      Invoice Value: ${data.invoiceValue}
-      Freight: ${data.freight}
-      Item Name 1: ${data.itemName1}
-      Quantity 1: ${data.item1Quantity}
-      Rate 1: ${data.item1Rate}
-      Total 1: ${data.item1Total}
-      Item Name 2: ${data.itemName2}
-      Quantity 2: ${data.item2Quantity}
-      Rate 2: ${data.item2Rate}
-      Total 2: ${data.item2Total}`);
+      setNotification(" Invoice added successfully:", formData);
 
       setTimeout(() => {
         setNotification(null); // Clear notification after 10 seconds
@@ -118,7 +109,7 @@ const AddInvoice = ({ onAddInvoice }) => {
 
       setFormData({
         date: "",
-        invoiceNumber: "",
+
         CustomerName: "",
         vehicleNumber: "",
         itemName1: "",
@@ -132,9 +123,15 @@ const AddInvoice = ({ onAddInvoice }) => {
         freight: "0",
         invoiceValue: 0,
       });
+      history(`/view-invoice/${formData.invoiceNumber}`);
     } catch (error) {
       console.error("Error adding invoice:", error);
       setNotification("Failed to add invoice");
+    } finally {
+      // Enable the submit button after form submission (whether successful or not)
+      e.target
+        .querySelector('button[type="submit"]')
+        .removeAttribute("disabled");
     }
   };
 
