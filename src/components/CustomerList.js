@@ -14,7 +14,7 @@ const CustomerList = () => {
   const fetchCustomers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/customers/list"
+        "https://backendserver-52a3.onrender.com/customers"
       );
       setCustomers(response.data);
     } catch (error) {
