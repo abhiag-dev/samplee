@@ -1513,9 +1513,7 @@ const ViewInvoice = () => {
                 style={{ borderRight: "1.0pt solid black", width: "409pt" }}
               >
                 {numberToWords(
-                  (totalGrossTotal + totalcgst + totalsgst + totaligst).toFixed(
-                    0
-                  )
+                  totalGrossTotal + totalcgst + totalsgst + totaligst
                 ) + " Only"}
               </td>
               <td
