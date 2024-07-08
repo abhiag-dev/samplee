@@ -49,7 +49,6 @@ const CustomerList = () => {
               <td>{customer.receiverStateCode}</td>
               <td>
                 <Link to={`/edit-customer/${customer.CustomerName}`}>Edit</Link>{" "}
-                {/* Link to edit customer page */}
               </td>
             </tr>
           ))}

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { useParams } from "react-router-dom";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -8,14 +7,12 @@ import "../css/ViewInvoice.css";
 
 const ViewInvoice = () => {
   const { invoiceNumber } = useParams();
-  // const location = useLocation();
-  // const generatePDF = location.state?.generatePDF;
   const [invoice, setInvoice] = useState(null);
   const [itemDetails, setItemDetails] = useState([]);
 
   const generatePDFDocument = () => {
     const input = document.getElementById("NEW BILL BOOK 24-2025_24295");
-    const scale = 4; // Increase scale for better resolution
+    const scale = 1; // Increase scale for better resolution
     html2canvas(input, { scale: scale })
       .then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
@@ -35,9 +32,15 @@ const ViewInvoice = () => {
     const fetchInvoice = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/invoices/${invoiceNumber}`
+          `http://localhost:3000/invoices/${invoiceNumber}`
         );
-        setInvoice(response.data);
+        const invoiceData = response.data;
+        const customerData = await fetchCustomer(invoiceData.CustomerName);
+
+        // Combine invoice and customer data
+        const combinedData = { ...invoiceData, ...customerData[0] };
+        setInvoice(combinedData);
+        // console.log(response.data.freight);
 
         // Fetch item details
         const itemIds = [
@@ -46,7 +49,7 @@ const ViewInvoice = () => {
           response.data.freight,
         ];
         const itemDetailsPromises = itemIds.map((itemId) =>
-          fetchItemDetails(itemId, response.data.Customer.receiverStateCode)
+          fetchItemDetails(itemId, customerData.receiverStateCode)
         );
         const itemsDetails = await Promise.all(itemDetailsPromises);
         setItemDetails(itemsDetails);
@@ -57,19 +60,30 @@ const ViewInvoice = () => {
 
     fetchInvoice();
   }, [invoiceNumber]);
-
+  const fetchCustomer = async (customerName) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/customers/${customerName}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching customer:", error);
+      return null;
+    }
+  };
   const fetchItemDetails = async (itemId, receiverStateCode) => {
     try {
       let response;
-      if (Number.isInteger(itemId) && invoice.freight > 0) {
-        response = await axios.get(`http://localhost:3001/api/items/freight`);
+      if (Number.isInteger(itemId)) {
+        response = await axios.get(`http://localhost:3000/items/${itemId}`);
+        console.log(itemId, "here I am");
       } else {
-        response = await axios.get(`http://localhost:3001/api/items/${itemId}`);
+        response = await axios.get(`http://localhost:3000/items/${itemId}`);
       }
       const details = response.data;
 
-      let cgst = details.cgst;
-      let sgst = details.sgst;
+      let cgst = details[0].cgst;
+      let sgst = details[0].sgst;
       let igst = null;
       let grossRate = 100 / (100 + (cgst + sgst));
 
@@ -79,7 +93,7 @@ const ViewInvoice = () => {
         cgst = null;
         sgst = null;
       }
-      console.log(details);
+      console.log(itemId);
       return {
         ...details,
         cgst,
@@ -573,7 +587,7 @@ const ViewInvoice = () => {
                 className="xl22024295"
                 style={{ borderRight: "1.0pt solid black", borderLeft: "none" }}
               >
-                {invoice && invoice.Customer.receiverCityState}
+                {invoice.receiverCityState}
               </td>
             </tr>
             <tr height={25} style={{ height: "18.6pt" }}>
@@ -607,7 +621,7 @@ const ViewInvoice = () => {
                 className="xl26424295"
                 style={{ borderRight: "1.0pt solid black", borderLeft: "none" }}
               >
-                {invoice && invoice.Customer.receiverName}
+                {invoice && invoice.receiverName}
               </td>
               <td
                 colSpan={2}
@@ -621,7 +635,7 @@ const ViewInvoice = () => {
                 className="xl22524295"
                 style={{ borderRight: "1.0pt solid black", borderLeft: "none" }}
               >
-                {invoice && invoice.Customer.receiverName}
+                {invoice && invoice.receiverName}
               </td>
             </tr>
             <tr height={25} style={{ height: "18.6pt" }}>
@@ -638,7 +652,7 @@ const ViewInvoice = () => {
                 className="xl26724295"
                 style={{ borderRight: "1.0pt solid black" }}
               >
-                {invoice && invoice.Customer.receiverAddress}
+                {invoice && invoice.receiverAddress}
               </td>
               <td
                 colSpan={2}
@@ -652,7 +666,7 @@ const ViewInvoice = () => {
                 className="xl22524295"
                 style={{ borderRight: "1.0pt solid black", borderLeft: "none" }}
               >
-                {invoice && invoice.Customer.receiverAddress}
+                {invoice && invoice.receiverAddress}
               </td>
             </tr>
             <tr height={25} style={{ height: "18.6pt" }}>
@@ -669,7 +683,7 @@ const ViewInvoice = () => {
                 className="xl26724295"
                 style={{ borderRight: "1.0pt solid black" }}
               >
-                {invoice && invoice.Customer.receiverCityState}
+                {invoice && invoice.receiverCityState}
               </td>
               <td
                 colSpan={2}
@@ -683,7 +697,7 @@ const ViewInvoice = () => {
                 className="xl22524295"
                 style={{ borderRight: "1.0pt solid black", borderLeft: "none" }}
               >
-                {invoice && invoice.Customer.receiverCityState}
+                {invoice && invoice.receiverCityState}
               </td>
             </tr>
             <tr height={29} style={{ height: "21.6pt" }}>
@@ -700,7 +714,7 @@ const ViewInvoice = () => {
                 className="xl25724295"
                 style={{ borderRight: "1.0pt solid black", borderLeft: "none" }}
               >
-                {invoice && invoice.Customer.receiverGSTIN}
+                {invoice && invoice.receiverGSTIN}
               </td>
               <td
                 colSpan={2}
@@ -714,7 +728,7 @@ const ViewInvoice = () => {
                 className="xl19424295"
                 style={{ borderRight: "1.0pt solid black", borderLeft: "none" }}
               >
-                {invoice && invoice.Customer.receiverGSTIN}
+                {invoice && invoice.receiverGSTIN}
               </td>
             </tr>
             <tr height={25} style={{ height: "18.6pt" }}>
@@ -731,7 +745,7 @@ const ViewInvoice = () => {
                 className="xl22024295"
                 style={{ borderRight: ".5pt solid black", borderLeft: "none" }}
               >
-                {invoice && invoice.Customer.receiverState}
+                {invoice && invoice.receiverState}
               </td>
               <td
                 colSpan={2}
@@ -745,7 +759,7 @@ const ViewInvoice = () => {
                 className="xl26224295"
                 style={{ borderRight: "1.0pt solid black" }}
               >
-                {invoice && invoice.Customer.receiverStateCode}
+                {invoice && invoice.receiverStateCode}
               </td>
               <td
                 colSpan={2}
@@ -759,7 +773,7 @@ const ViewInvoice = () => {
                 className="xl19724295"
                 style={{ borderRight: ".5pt solid black", borderLeft: "none" }}
               >
-                {invoice && invoice.Customer.receiverState}
+                {invoice && invoice.receiverState}
               </td>
               <td
                 colSpan={2}
@@ -773,7 +787,7 @@ const ViewInvoice = () => {
                 className="xl20124295"
                 style={{ borderRight: "1.0pt solid black", borderLeft: "none" }}
               >
-                {invoice && invoice.Customer.receiverStateCode}
+                {invoice && invoice.receiverStateCode}
               </td>
             </tr>
 
@@ -947,11 +961,11 @@ const ViewInvoice = () => {
                       borderLeft: "none",
                     }}
                   >
-                    {details.itemName}
+                    {details[0].itemName}
                   </td>
-                  <td className="xl8124295"> {details.hsnCode}</td>
+                  <td className="xl8124295"> {details[0].hsnCode}</td>
                   <td className="xl8224295" align="right">
-                    {details.itemName !== "Freight" ? (
+                    {details[0].itemName !== "Freight" ? (
                       index === 0 ? (
                         invoice.item1Quantity
                       ) : (
