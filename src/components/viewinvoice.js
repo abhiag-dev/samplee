@@ -86,7 +86,7 @@ const ViewInvoice = () => {
           `https://backendserver-52a3.onrender.com/items/Freight`
         );
         details = details.data[0];
-      } else {
+      } else if (itemId) {
         response = await axios.get(
           `https://backendserver-52a3.onrender.com/items/${itemId}`
         );
