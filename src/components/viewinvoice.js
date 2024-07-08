@@ -175,7 +175,7 @@ const ViewInvoice = () => {
     const hundred = Math.floor(n / 100);
     const rest = n % 100;
     return (
-      (hundred > 0 ? ones[hundred] + " hundred " : "") +
+      (hundred > 0 ? ones[hundred] + " Hundred " : "") +
       (rest > 0 ? (getBelowHundred(rest) ? getBelowHundred(rest) : "") : "")
     );
   }
@@ -209,13 +209,13 @@ const ViewInvoice = () => {
     const parts = [];
 
     if (segments.crore > 0) {
-      parts.push(getBelowHundred(segments.crore) + " crore");
+      parts.push(getBelowHundred(segments.crore) + " Crore");
     }
     if (segments.lakh > 0) {
-      parts.push(getBelowHundred(segments.lakh) + " lakh");
+      parts.push(getBelowHundred(segments.lakh) + " Lakh");
     }
     if (segments.thousand > 0) {
-      parts.push(getHundreds(segments.thousand) + " thousand");
+      parts.push(getHundreds(segments.thousand) + " Thousand");
     }
     if (segments.hundred > 0) {
       parts.push(getHundreds(segments.hundred));
@@ -1515,7 +1515,9 @@ const ViewInvoice = () => {
                 style={{ borderRight: "1.0pt solid black", width: "409pt" }}
               >
                 {numberToWords(
-                  totalGrossTotal + totalcgst + totalsgst + totaligst
+                  (totalGrossTotal + totalcgst + totalsgst + totaligst).toFixed(
+                    0
+                  )
                 ) + " Only"}
               </td>
               <td
