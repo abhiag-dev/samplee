@@ -71,7 +71,7 @@ const EditInvoice = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://localhost/3000/invoices/delete/${InvoiceNumber}`
+        `https://backendserver-52a3.onrender.com/invoices/delete/${InvoiceNumber}`
       );
       alert("Invoice deleted successfully!");
       // history.push("/invoices"); // Redirect to invoices list or another route
