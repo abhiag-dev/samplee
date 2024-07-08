@@ -92,7 +92,7 @@ const ViewInvoice = () => {
         );
         details = response.data[0];
       } else {
-        return {};
+        return;
       }
 
       // response.data;
