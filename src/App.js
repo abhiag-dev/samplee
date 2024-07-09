@@ -17,6 +17,18 @@ const App = () => {
       <div className="content">
         <Routes>
           <Route path="/" element={<InvoiceList />} />
+          <Route
+            path="/test"
+            element={
+              <iframe
+                width="1200"
+                height="600"
+                frameborder="0"
+                scrolling="no"
+                src="https://onedrive.live.com/embed?resid=8DBFDDE7F94D9700%2164933&authkey=%21AKEqcdv9H6gi3u4&em=2&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True"
+              ></iframe>
+            }
+          />
           <Route path="/edit/:CustomerName" element={<EditCustomer />} />
           <Route
             path="/edit-invoice/:InvoiceNumber"
