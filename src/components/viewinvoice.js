@@ -265,14 +265,14 @@ const ViewInvoice = () => {
       </div>
       <div
         id="NEW BILL BOOK 24-2025_24295"
-        style={{ paddingTop: "88.8pt" }}
+        style={{ paddingTop: "108.8pt" }}
         align="center"
       >
         <table
           border={0}
           cellPadding={0}
           cellSpacing={0}
-          width={1230}
+          width={1230 * 1.2}
           style={{
             borderCollapse: "collapse",
             tableLayout: "fixed",
@@ -294,7 +294,7 @@ const ViewInvoice = () => {
                 colSpan={14}
                 className="xl22824295"
                 width={1104}
-                style={{ width: "831pt" }}
+                style={{ width: "1031pt" }}
               >
                 CAN INDIA
               </td>
@@ -1479,14 +1479,15 @@ const ViewInvoice = () => {
               <td className="xl9224295">&nbsp;</td>
               <td className="xl11524295">&nbsp;</td>
               <td
-                colSpan={5}
+                colSpan={4}
                 className="xl17124295"
                 style={{ borderRight: ".5pt solid black", borderLeft: "none" }}
               >
                 Total Amount Before Tax
               </td>
               <td
-                className="xl11624295"
+                colSpan={2}
+                className="xl11724295"
                 align="right"
                 style={{ borderLeft: "none" }}
               >
@@ -1509,7 +1510,7 @@ const ViewInvoice = () => {
                 width={544}
                 style={{
                   borderRight: "1.0pt solid black",
-                  fontSize: "20pt",
+
                   width: "409pt",
                 }}
               >
@@ -1520,13 +1521,17 @@ const ViewInvoice = () => {
                 ) + " Only"}
               </td>
               <td
-                colSpan={5}
+                colSpan={4}
                 className="xl18324295"
                 style={{ borderRight: ".5pt solid black", borderLeft: "none" }}
               >
                 Add:- CGST
               </td>
-              <td className="xl11724295" style={{ borderLeft: "none" }}>
+              <td
+                colSpan={2}
+                className="xl11724295"
+                style={{ borderLeft: "none" }}
+              >
                 {totalcgst.toFixed(0)}
               </td>
             </tr>
@@ -1541,13 +1546,14 @@ const ViewInvoice = () => {
               <td className="xl9424295" />
               <td className="xl9524295">&nbsp;</td>
               <td
-                colSpan={5}
+                colSpan={4}
                 className="xl18324295"
                 style={{ borderRight: ".5pt solid black", borderLeft: "none" }}
               >
                 Add:- SGST
               </td>
               <td
+                colSpan={2}
                 className="xl11824295"
                 style={{ borderTop: "none", borderLeft: "none" }}
               >
@@ -1574,13 +1580,14 @@ const ViewInvoice = () => {
               {/* <td className="xl9724295" /> */}
               <td className="xl11924295">&nbsp;</td>
               <td
-                colSpan={5}
+                colSpan={4}
                 className="xl18624295"
                 style={{ borderRight: ".5pt solid black", borderLeft: "none" }}
               >
                 Add:- IGST
               </td>
               <td
+                colSpan={2}
                 className="xl12024295"
                 style={{ borderTop: "none", borderLeft: "none" }}
               >
@@ -1617,7 +1624,7 @@ const ViewInvoice = () => {
                 colSpan={2}
                 rowSpan={2}
                 className="xl12224295"
-                style={{ fontSize: "24pt" }}
+                style={{ fontSize: "calc(1em + 8pt)" }}
               >
                 {" "}
                 {(totalGrossTotal + totalcgst + totalsgst + totaligst).toFixed(
