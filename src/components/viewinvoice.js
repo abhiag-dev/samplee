@@ -265,11 +265,9 @@ const ViewInvoice = () => {
       </div>
       <div
         id="NEW BILL BOOK 24-2025_24295"
-        style={{ paddingTop: "28.8pt" }}
+        style={{ paddingTop: "88.8pt" }}
         align="center"
       >
-        <div className="top1"></div>
-        <div className="top2"></div>
         <table
           border={0}
           cellPadding={0}
@@ -495,10 +493,7 @@ const ViewInvoice = () => {
                 className="xl25224295"
                 style={{ borderRight: "1.0pt solid black", borderLeft: "none" }}
               >
-                {invoice.itemName2 === "Freight" ||
-                invoice.itemName1 === "Freight"
-                  ? "By Road"
-                  : "TO PAY"}
+                {invoice.frieght > 0 ? "TO PAY" : "By Road"}
               </td>
             </tr>
             <tr height={25} style={{ height: "18.6pt" }}>
@@ -1509,10 +1504,14 @@ const ViewInvoice = () => {
               </td>
               <td
                 colSpan={7}
-                rowSpan={2}
+                rowSpan={3}
                 className="xl17724295"
                 width={544}
-                style={{ borderRight: "1.0pt solid black", width: "409pt" }}
+                style={{
+                  borderRight: "1.0pt solid black",
+                  fontSize: "20pt",
+                  width: "409pt",
+                }}
               >
                 {numberToWords(
                   (totalGrossTotal + totalcgst + totalsgst + totaligst).toFixed(
@@ -1563,16 +1562,16 @@ const ViewInvoice = () => {
               >
                 &nbsp;
               </td>
-              <td className="xl9424295" />
-              <td className="xl9524295">&nbsp;</td>
-              <td className="xl9624295" style={{ borderLeft: "none" }}>
-                &nbsp;
-              </td>
-              <td className="xl9724295" />
-              <td className="xl9724295" />
-              <td className="xl9724295" />
-              <td className="xl9724295" />
-              <td className="xl9724295" />
+              {/* <td className="xl9424295" /> */}
+              {/* <td className="xl9524295">&nbsp;</td> */}
+              {/* <td className="xl9624295" style={{ borderLeft: "none" }}> */}
+              &nbsp;
+              {/* </td> */}
+              {/* <td className="xl9724295" /> */}
+              {/* <td className="xl9724295" /> */}
+              {/* <td className="xl9724295" /> */}
+              {/* <td className="xl9724295" /> */}
+              {/* <td className="xl9724295" /> */}
               <td className="xl11924295">&nbsp;</td>
               <td
                 colSpan={5}
@@ -1608,13 +1607,18 @@ const ViewInvoice = () => {
               <td className="xl9924295">&nbsp;</td>
               <td className="xl12124295">&nbsp;</td>
               <td
-                colSpan={5}
+                colSpan={4}
                 className="xl18924295"
                 style={{ borderRight: "1.0pt solid black", borderLeft: "none" }}
               >
                 Total Amount After Tax
               </td>
-              <td className="xl12224295">
+              <td
+                colSpan={2}
+                rowSpan={2}
+                className="xl12224295"
+                style={{ fontSize: "24pt" }}
+              >
                 {" "}
                 {(totalGrossTotal + totalcgst + totalsgst + totaligst).toFixed(
                   0
@@ -1638,12 +1642,13 @@ const ViewInvoice = () => {
               <td className="xl6824295" />
               <td className="xl6824295" />
               <td className="xl6824295" />
+
               <td className="xl6824295" />
               <td className="xl6824295" />
               <td className="xl6824295" />
+              <td className="xl12424295">&nbsp;</td>
               <td className="xl6824295" />
               <td className="xl12324295" />
-              <td className="xl12424295">&nbsp;</td>
             </tr>
             <tr height={25} style={{ height: "18.6pt" }}>
               <td
