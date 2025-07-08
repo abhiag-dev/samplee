@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import axios from "axios";
+import axios from "./axios";
 import "../css/ViewInvoice.css";
 
 const ViewInvoice = () => {
@@ -32,7 +32,7 @@ const ViewInvoice = () => {
     const fetchInvoice = async () => {
       try {
         const response = await axios.get(
-          `https://backendserver-52a3.onrender.com/invoices/${invoiceNumber}`
+          `/invoices/${invoiceNumber}`
         );
         const invoiceData = response.data;
         const customerData = await fetchCustomer(invoiceData.CustomerName);
@@ -66,7 +66,7 @@ const ViewInvoice = () => {
   const fetchCustomer = async (customerName) => {
     try {
       const response = await axios.get(
-        `https://backendserver-52a3.onrender.com/customers/${customerName}`
+        `/customers/${customerName}`
       );
       return response.data;
     } catch (error) {
@@ -83,12 +83,12 @@ const ViewInvoice = () => {
       // console.log(itemId);
       if (typeof itemId == "number") {
         details = await axios.get(
-          `https://backendserver-52a3.onrender.com/items/Freight`
+          `/items/Freight`
         );
         details = details.data[0];
       } else if (itemId) {
         response = await axios.get(
-          `https://backendserver-52a3.onrender.com/items/${itemId}`
+          `/items/${itemId}`
         );
         details = response.data[0];
       } else {

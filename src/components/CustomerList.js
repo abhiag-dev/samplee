@@ -1,6 +1,6 @@
 // src/components/CustomerList.js
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "./axios";
 import { Link } from "react-router-dom";
 import "../css/CustomerList.css"; // Import CSS for styling if needed
 
@@ -14,7 +14,7 @@ const CustomerList = () => {
   const fetchCustomers = async () => {
     try {
       const response = await axios.get(
-        "https://backendserver-52a3.onrender.com/customers"
+        "/customers"
       );
       setCustomers(response.data);
     } catch (error) {

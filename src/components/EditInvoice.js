@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import axios from "./axios";
 
 const EditInvoice = () => {
   const { InvoiceNumber } = useParams();
@@ -9,14 +9,14 @@ const EditInvoice = () => {
 
   useEffect(() => {
     axios
-      .get(`https://backendserver-52a3.onrender.com/invoices/${InvoiceNumber}`)
+      .get(`/invoices/${InvoiceNumber}`)
       .then((response) => setInvoice(response.data))
       .catch((error) =>
         console.error("There was an error fetching the invoice!", error)
       );
 
     axios
-      .get("https://backendserver-52a3.onrender.com/customers")
+      .get("/customers")
       .then((response) => setCustomers(response.data))
       .catch((error) =>
         console.error("There was an error fetching the customers!", error)
@@ -72,7 +72,7 @@ const EditInvoice = () => {
     e.preventDefault();
     axios
       .put(
-        `https://backendserver-52a3.onrender.com/invoices/${InvoiceNumber}`,
+        `/${InvoiceNumber}`,
         formData
       )
       .then((response) => {

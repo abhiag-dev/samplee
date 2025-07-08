@@ -1,6 +1,6 @@
 // src/components/InvoiceList.js
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "./axios";
 
 import { Link, useNavigate } from "react-router-dom";
 import "../css/InvoiceList.css";
@@ -16,7 +16,7 @@ const InvoiceList = () => {
   const fetchInvoices = async () => {
     try {
       const response = await axios.get(
-        "https://backendserver-52a3.onrender.com/invoices/list"
+        "/invoices/list"
       );
       setInvoices(response.data);
     } catch (error) {

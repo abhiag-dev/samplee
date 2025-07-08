@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "./axios";
 import "../css/EditCustomer.css"; // Import CSS file for styling
 import { useNavigate } from "react-router-dom";
 const AddInvoice = ({ onAddInvoice }) => {
@@ -29,20 +29,20 @@ const AddInvoice = ({ onAddInvoice }) => {
   useEffect(() => {
     // Fetch customers from the backend
     axios
-      .get("https://backendserver-52a3.onrender.com/customers")
+      .get("/customers")
       .then((response) => setCustomers(response.data))
       .catch((error) => console.error("Error fetching customers:", error));
 
     // Fetch items from the backend
     axios
-      .get("https://backendserver-52a3.onrender.com/items")
+      .get("/items")
       .then((response) => setItems(response.data))
       .catch((error) => console.error("Error fetching items:", error));
 
     // Fetch the last invoice number
     axios
       .get(
-        "https://backendserver-52a3.onrender.com/invoices/last-invoice-number"
+        "/invoices/last-invoice-number"
       )
       .then((response) => {
         const lastInvoiceNumber = response.data.lastInvoiceNumber || "0";
@@ -81,7 +81,7 @@ const AddInvoice = ({ onAddInvoice }) => {
       // Fetch last items rates for the selected customer
       axios
         .get(
-          `https://backendserver-52a3.onrender.com/invoices/${value}/last-items-rates`
+          `/${value}/last-items-rates`
         )
         .then((response) => setLastItemsRates(response.data))
         .catch((error) =>
@@ -97,7 +97,7 @@ const AddInvoice = ({ onAddInvoice }) => {
       .setAttribute("disabled", "disabled");
     try {
       await axios.post(
-        "https://backendserver-52a3.onrender.com/invoices/add",
+        "/invoices/add",
         formData
       );
 
